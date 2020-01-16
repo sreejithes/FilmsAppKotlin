@@ -6,20 +6,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.filmsapp.R
-import com.example.filmsapp.adapter.FetchData
 import com.example.filmsapp.adapter.FilmAdapter
 import com.example.filmsapp.data.Filmdata
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 
@@ -33,6 +32,7 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val v = inflater.inflate(R.layout.fragment_home, container, false)
+        val progressBar=v.findViewById<ProgressBar>(R.id.progress_bar)
         init(v)
         fetchData()
 
@@ -40,10 +40,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun init(v: View) {
-
-        val filmName = v.findViewById<TextView>(R.id.film_name)
-        val process = FetchData()
-        process.execute()
 
         v.home_recycler.layoutManager = LinearLayoutManager(context)
 
@@ -69,14 +65,12 @@ class HomeFragment : Fragment() {
                 e.printStackTrace()
             }
 
-
             override fun onResponse(call: okhttp3.Call, response: Response) {
                 if (response.isSuccessful) {
                     val responseString = response.body!!.string()
                     Log.d("loga", "succ: " + responseString)
 
                     activity!!.runOnUiThread {
-
                         try {
                             val jsonObj = JSONObject(responseString)
                             val JA = jsonObj.getJSONArray("results")
@@ -91,21 +85,15 @@ class HomeFragment : Fragment() {
                                 )
                                 itemLlist.add(model)
                                 view!!.home_recycler.adapter = FilmAdapter(itemLlist, activity as Context)
-
+                                progress_bar.visibility=View.INVISIBLE
                             }
-
-
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
-
                     }
                 }
             }
 
         })
-
     }
-
-
 }
