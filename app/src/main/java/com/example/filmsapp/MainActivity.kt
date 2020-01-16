@@ -1,6 +1,4 @@
 package com.example.filmsapp
-
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
 import com.example.filmsapp.ui.HomeFragment
