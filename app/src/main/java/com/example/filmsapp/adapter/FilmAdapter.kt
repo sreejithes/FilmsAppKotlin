@@ -5,12 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.filmsapp.R
-import kotlinx.android.synthetic.main.item_films.view.*
+import com.example.filmsapp.data.Filmdata
+import com.example.filmsapp.ui.DetailsFragment
 
 
-internal class FilmAdapter(val items: ArrayList<String>, val context: Context) :
+internal class FilmAdapter(val itemLlist: ArrayList<Filmdata>, val context: Context) :
     RecyclerView.Adapter<FilmAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -19,17 +22,20 @@ internal class FilmAdapter(val items: ArrayList<String>, val context: Context) :
     }
 
     override fun getItemCount(): Int {
-        return items.size
+        return itemLlist.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder?.filmName.text = items.get(position)
-        holder?.releaseYear.text = items.get(position)
+        holder?.filmName.text = itemLlist.get(position).filmName
+        holder?.filmName.setOnClickListener {
+            val detailsFragment=DetailsFragment(itemLlist.get(position).filmName,itemLlist.get(position).directorName,itemLlist.get(position).producerName,itemLlist.get(position).releaseDate,itemLlist.get(position).description)
+            val manager:FragmentManager=(context as AppCompatActivity).supportFragmentManager
+            manager.beginTransaction().add(R.id.main_content,detailsFragment,"detailsFragment").addToBackStack("stack").commit()
+        }
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var filmName = view.findViewById<TextView>(R.id.film_name)
-        var releaseYear = view.release_year
     }
 }
 
